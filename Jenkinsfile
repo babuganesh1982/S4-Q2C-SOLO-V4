@@ -8,7 +8,7 @@ pipeline {
     }
     stage('run all files in the collection') {
       steps {
-        dir('TestJenkinsBru') {
+        dir('01_EquipmentLinkage') {
          bat 'bru run --env CC3-702 --insecure'
         }
       }
