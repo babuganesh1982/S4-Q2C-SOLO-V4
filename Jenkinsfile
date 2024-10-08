@@ -3,13 +3,13 @@ pipeline {
   stages {
     stage('verify installation') {
       steps {
-       powershell 'bru --version'
+       bat 'bru --version'
       }
     }
     stage('run all files in the collection') {
       steps {
         dir('TestJenkinsBru') {
-         powershell 'bru run --env CC3-702'
+         bat 'bru run --env CC3-702'
         }
       }
     }
