@@ -13,14 +13,5 @@ pipeline {
         }
       }
     }
-    stage('explicityly run get-usebruno-user-information') {
-      steps {
-        dir('TestJenkinsBru') {
-          sh '''
-            bru run get-usebruno-user-information.bru
-          '''
-        }
-      }
-    }
   }
 }
