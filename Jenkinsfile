@@ -9,7 +9,7 @@ pipeline {
     stage('run all files in the collection') {
       steps {
         dir('TestJenkinsBru') {
-          sh 'bru run'
+          sh 'bru run --env CC3-702'
         }
       }
     }
