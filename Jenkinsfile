@@ -9,7 +9,7 @@ pipeline {
     stage('run all files in the collection') {
       steps {
         dir('TestJenkinsBru') {
-         bat 'bru run --env CC3-702'
+         bat 'bru run --env CC3-702 --insecure'
         }
       }
     }
