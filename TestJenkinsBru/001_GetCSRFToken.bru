@@ -1,0 +1,28 @@
+meta {
+  name: 001_GetCSRFToken
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{server}}{{odatav4_path}}/BusinessSolutionOrder?$top=1
+  body: none
+  auth: basic
+}
+
+params:query {
+  $top: 1
+}
+
+headers {
+  x-csrf-token: fetch
+}
+
+auth:basic {
+  username: {{username}}
+  password: Welcome1!
+}
+
+script:post-response {
+  bru.setEnvVar("XCSRF",res.getHeader("x-csrf-token"))
+}

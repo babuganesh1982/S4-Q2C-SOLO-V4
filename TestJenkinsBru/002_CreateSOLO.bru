@@ -1,0 +1,74 @@
+meta {
+  name: 002_CreateSOLO
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{server}}{{odatav4_path}}BusinessSolutionOrder
+  body: json
+  auth: basic
+}
+
+headers {
+  Content-Type: application/json
+  sap-client: {{sap-client}}
+  x-csrf-token: {{XCSRF}}
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
+
+body:json {
+  {
+      "BusSolnOrdType": "SOLO",
+      "BusSolnOrdDescription": "SOLO ER1 BabuV4 API ItmRel Err",
+      "PurchaseOrderByCustomer": "20000011",
+      "Language": "EN",
+      "SoldToParty": "17100001",
+      "ShipToParty": "17100002",
+      "BillToParty": "17100002",
+      "PayerParty": "17100002",
+      "SalesOrganization": "1710",
+      "DistributionChannel": "10",
+      "Division": "00",
+      "SalesOffice": "170",
+      "SalesGroup": "170",
+      "RespEmployeeBusinessPartnerId":"{{RESP_EMP}}",
+      "ContactPersonBusinessPartnerId": "{{CONTACT_PERSON}}",  
+      "BusSolnOrdExtReference": "SOLO ER1 Babu V4 API",
+      "PaymentTerms": "0001",
+      "_Item": [
+        {
+              "BusinessSolutionOrderItem": "10",
+              "Product": "TG11",
+              "Quantity": 1,
+              "QuantityUnit": "PC",
+              "BusSolnOrdItmQtyUnitISOCode": "PCE",
+              "PaymentTerms": "0001",
+              "BillingBlockReason": "03",
+              "DeliveryBlockReason": "01",
+               "BusSolnOrdItmIsReleased": false,
+              "RequestedDeliveryUTCDateTime": "2024-07-15T23:00:00Z",
+              "OrderCombinationIsAllowed": true,
+              "BusSolnOrdItmExtReference": "Quotation: 20000011",
+              "BusSolnOrdItmCategory":"SOSA",
+              "SoldToParty": "17100001",
+              "ShipToParty": "17100001",
+              "BillToParty": "17100001",
+              "PayerParty": "17100001",
+              "RespEmployeeBusinessPartnerId": "{{RESP_EMP}}",
+              "ContactPersonBusinessPartnerId": "{{CONTACT_PERSON}}",
+              "Plant": "1710",
+          "ItemGrossWeight": 16,
+    "ItemNetWeight": 17.2,
+    "ItemVolume": 0.19,
+           "UnitOfMeasureSAPCode": "M3",
+    "UnitOfMeasureISOCode": "MTQ"
+          } 
+    ]
+    
+  }
+}
