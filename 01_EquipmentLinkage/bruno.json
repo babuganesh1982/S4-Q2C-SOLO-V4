@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "01_EquipmentLinkage",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

@@ -1,0 +1,64 @@
+meta {
+  name: 013_Get_Solo_RefOBJ
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{server}}{{odatav4_path}}BusinessSolutionOrder/{{SOLO_007}}/_Item?$expand=_ReferenceObject
+  body: none
+  auth: basic
+}
+
+params:query {
+  $expand: _ReferenceObject
+}
+
+headers {
+  Content-Type: application/json
+  sap-client: {{sap-client}}
+  x-csrf-token: {{XCSRF}}
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
+
+vars:post-response {
+  SOLO_ID: res.body.value[0].BusinessSolutionOrder
+  refObj: res.body.value[1]._ReferenceObject
+  equipment: res.body.value[1]._ReferenceObject.ServiceReferenceEquipment
+  ~resp_Qty: res.body.value[0].Quantity
+}
+
+assert {
+  res.status: eq 200
+  SOLO_ID: isDefined
+  refObj: isDefined
+  equipment: isDefined
+  ~resp_Qty: eq 2
+  ~res.body._Item.length: eq 5
+}
+
+script:pre-request {
+  //console.log("PRE: XCSRF"+ bru.getVar("xcsrfToken"))
+  
+  await new Promise(r => setTimeout(r, 15000));
+  
+}
+
+script:post-response {
+  //console.log("Post"+res.body.BusSolnOrdHasError);
+  //bru.setEnvVar("SOLO_004",res.body.BusinessSolutionOrder)
+  
+}
+
+tests {
+  test("DET SOLO Ref Object " +res.body.value[1]._ReferenceObject.ServiceReferenceEquipment + " Response Time: "+res.getResponseTime()+"ms", function(){
+    //const data1 = res.body.BusSolnOrdHasError;
+    //expect(data1).to.not.equal('X');
+    const data2 = res.status;
+    expect(data2).equal(200);
+  });
+}

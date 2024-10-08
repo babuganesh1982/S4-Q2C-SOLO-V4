@@ -1,0 +1,77 @@
+meta {
+  name: 009_Create_Delivery
+  type: http
+  seq: 9
+}
+
+post {
+  url: https://cc3-702-api.devsys.net.sap/sap/opu/odata/sap/API_OUTBOUND_DELIVERY_SRV;v=0002/A_OutbDeliveryHeader
+  body: json
+  auth: basic
+}
+
+headers {
+  Content-Type: application/json
+  sap-client: {{sap-client}}
+  x-csrf-token: {{DEL_XCSRF}}
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
+
+body:json {
+  {
+    
+    "to_DeliveryDocumentItem": [
+      
+      {
+        "ReferenceSDDocument":"{{SLSORD_007}}"
+      }
+    ]
+  }
+}
+
+vars:post-response {
+  ~SOLO_ID: res.body.BusinessSolutionOrder
+  ~contDetr: res.body._Item[0].SrvcContrDetnIsSpprsd
+}
+
+assert {
+  res.status: eq 201
+  ~SOLO_ID: isDefined
+  ~contDetr: isDefined
+}
+
+script:pre-request {
+  //console.log("PRE: XCSRF"+ bru.getVar("xcsrfToken"))
+  
+  
+}
+
+script:post-response {
+  //console.log("Post"+res.body.BusSolnOrdHasError);
+  //bru.setEnvVar("SOLO_007",res.body.BusinessSolutionOrder)
+  
+  bru.setEnvVar("DELIVERY_DOC",res.body.d.DeliveryDocument);
+  
+  
+  await new Promise(r => setTimeout(r, 5000));
+  
+  //console.log("SAP Message1: "+res.getHeader("sap-messages"))
+  
+  
+}
+
+tests {
+  
+  test("Create Delivery Response Time: "+res.getResponseTime()+"ms", function(){
+    //const data1 = res.body.BusSolnOrdHasError;
+    //expect(data1).to.not.equal('X');
+    const data2 = res.status;
+    expect(data2).equal(201);
+  });
+  
+  
+}

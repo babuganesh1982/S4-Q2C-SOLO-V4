@@ -1,0 +1,72 @@
+meta {
+  name: 004_Release_Item_20
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{server}}{{odatav4_path}}BusinessSolutionOrderItem/{{SOLO_007}}/20
+  body: json
+  auth: basic
+}
+
+headers {
+  Content-Type: application/json
+  sap-client: {{sap-client}}
+  x-csrf-token: {{XCSRF}}
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
+
+body:json {
+  {
+   
+    "BusSolnOrdItmIsReleased": true
+  }
+}
+
+vars:post-response {
+  SOLO_ID: res.body.BusinessSolutionOrder
+  ~resp_Qty: res.body.Quantity
+}
+
+assert {
+  res.status: eq 200
+  SOLO_ID: isDefined
+  ~resp_Qty: eq 2
+}
+
+script:pre-request {
+  //console.log("PRE: XCSRF"+ bru.getVar("xcsrfToken"))
+  
+  
+}
+
+script:post-response {
+  //console.log("Post"+res.body.BusSolnOrdHasError);
+  //bru.setEnvVar("SOLO_004",res.body.BusinessSolutionOrder)
+  
+  await new Promise(r => setTimeout(r, 95000));
+  
+}
+
+tests {
+  /*test("Solution Order Created with Errors", function(){
+    const data = res.body.BusSolnOrdHasError;
+    expect(data).to.equal('X');
+  });
+  */
+  
+  test("Solution Order Sales Item Patch Update Quantity to 2 Response Time: "+res.getResponseTime()+"ms", function(){
+    //const data1 = res.body.BusSolnOrdHasError;
+    //expect(data1).to.not.equal('X');
+    const data2 = res.status;
+    expect(data2).equal(200);
+  });
+  
+  
+  
+}

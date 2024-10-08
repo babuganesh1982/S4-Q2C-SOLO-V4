@@ -1,0 +1,159 @@
+meta {
+  name: 002_Create_Solo
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{server}}{{odatav4_path}}BusinessSolutionOrder
+  body: json
+  auth: basic
+}
+
+headers {
+  Content-Type: application/json
+  sap-client: {{sap-client}}
+  x-csrf-token: {{XCSRF}}
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
+
+body:json {
+  {
+    "BusSolnOrdType": "SOLO",
+    "BusSolnOrdDescription": "Bruno Automation SoloV2TestCase_1",
+    "BusSolnOrdExtReference": "Bruno Automation SoloV2TestCase_1",
+    "RespEmployeeBusinessPartnerId": "{{RESP_EMP}}",
+    "ContactPersonBusinessPartnerId": "{{CONTACT_PERSON}}",
+    "Language": "EN",
+    "SalesOrganization": "1710",
+    "DistributionChannel": "10",
+    "Division": "00",
+    "SalesOffice": "170",
+    "SalesGroup": "170",
+    "SoldToParty": "17100002",
+    "ShipToParty": "17100002",
+    "BillToParty": "17100002",
+    "PayerParty": "17100002",
+    "BusSolnOrdIsReleased": false,
+    "PurchaseOrderByCustomer": "Qoutation:1000000001",
+    "PaymentTerms": "0001",
+    "_Item": [
+      
+      {
+        "BusinessSolutionOrderItem":"10",
+        "Product": "RM33",
+        "Quantity": 1,
+        "QuantityUnit": "PC",
+        "BusSolnOrdItmQtyUnitISOCode": "PCE",
+        "Language": "EN",
+        "PaymentTerms": "0001",
+        
+        "BusSolnOrdItmIsReleased": false,
+        "RequestedDeliveryUTCDateTime": "2024-07-15T23:00:00Z",
+        "OrderCombinationIsAllowed": true,
+        "BusSolnOrdItmCategory": "SOT1",
+        "SoldToParty": "17100002",
+        "ShipToParty": "17100002",
+        "BillToParty": "17100002",
+        "PayerParty": "17100002",
+        "BusSolnOrdItmExtReference": "Quotation: 10002",
+        "_Text": [
+          {
+            "Language": "EN",
+            "TextObjectType": "0001",
+            "BusSolnOrdItmLongText": "It's a sales item"
+          }
+        ]},
+      {
+        "BusinessSolutionOrderItem":"20",
+        "Product": "SRV_01",
+        "Quantity": 1,
+        "BusSolnOrdItmCategory": "SOSR",
+        "BusSolnOrdItmIsReleased": false,
+        "QuantityUnit": "HR",
+        "BusSolnOrdItmQtyUnitISOCode": "HUR",
+        "BillableControl": "S1",
+        "SrvcContrDetnIsSpprsd": true,
+        "RequestedServiceStartDateTime":"2024-10-05T23:00:00Z",
+        "RequestedServiceEndDateTime":"2024-10-08T23:00:00Z",
+       
+        "BusSolnOrdItmExtReference": "Qoutation: 10003",
+        "_Text": [
+          {
+            "Language": "EN",
+            "TextObjectType": "0002",
+            "BusSolnOrdItmLongText": "It''s a service item"
+          }
+        ]
+        ,
+        "_ReferenceObject": [
+          {
+            "ServiceRefObjectSequenceNumber": "1",
+            "SerialNumber": "10000000"
+          }
+        ]
+      }
+    ],
+    "_ItemRelationship":[
+      {
+        "SrvcItemRelshpFromItemNumber":"20",
+        "SrvcItemRelshpToItemNumber":"10",
+        "SrvcItemRelshpType":"003"
+      }
+    ],
+    "_Text": [
+      {
+        "Language": "EN",
+        "TextObjectType": "0001",
+        "BusinessSolutionOrderLongText": "Solution Order Header Note"
+      }
+    ]
+  }
+}
+
+vars:post-response {
+  SOLO_ID: res.body.BusinessSolutionOrder
+  ~contDetr: res.body._Item[0].SrvcContrDetnIsSpprsd
+}
+
+assert {
+  res.status: eq 201
+  SOLO_ID: isDefined
+  ~contDetr: isDefined
+}
+
+script:pre-request {
+  //console.log("PRE: XCSRF"+ bru.getVar("xcsrfToken"))
+  
+  
+}
+
+script:post-response {
+  //console.log("Post"+res.body.BusSolnOrdHasError);
+  bru.setEnvVar("SOLO_007",res.body.BusinessSolutionOrder)
+  
+  //console.log("SAP Message1: "+res.getHeader("sap-messages"))
+  
+  //bru.sleep(3000);
+  
+  await new Promise(r => setTimeout(r, 1500));
+  
+  
+}
+
+tests {
+  
+  
+  test("Solution Order Created Successfully without Errors " + res.body.BusinessSolutionOrder + " Response Time: "+res.getResponseTime()+"ms\nSrvcContrDetnIsSpprsd:true\nNo Contract / Contract Item Passed", function(){
+    
+  
+    
+    expect(res.body.BusSolnOrdHasError).equal("") 
+  });
+  
+  
+}

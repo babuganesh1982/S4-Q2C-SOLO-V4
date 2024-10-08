@@ -1,0 +1,80 @@
+meta {
+  name: 006_V2_GetFollowUpSalesOrder
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{server}}{{v2_path}}A_BusinessSolutionOrder('{{SOLO_007}}')/to_SalesOrder
+  body: json
+  auth: basic
+}
+
+headers {
+  Content-Type: application/json
+  sap-client: {{sap-client}}
+  x-csrf-token: {{XCSRF}}
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
+
+body:json {
+  {
+  "BusSolnOrdItmDescription":"Updated Service item description"
+   }
+}
+
+vars:pre-request {
+  req_Desc: req.body.BusSolnOrdItmDescription
+}
+
+vars:post-response {
+  SOLO_ID: res.body.BusinessSolutionOrder
+  salesorder: res.body.d.results[0].SalesOrder
+}
+
+assert {
+  res.status: eq 200
+  salesorder: isDefined
+  ~SOLO_ID: isDefined
+}
+
+script:pre-request {
+  //console.log("PRE: XCSRF"+ bru.getVar("xcsrfToken"))
+  
+  
+}
+
+script:post-response {
+  //console.log("Post"+res.body.BusSolnOrdHasError);
+  //await sleep();
+  bru.setEnvVar("SLSORD_007",res.body.d.results[0].SalesOrder)
+  
+  await new Promise(r => setTimeout(r, 5000));
+  
+  
+  
+  
+}
+
+tests {
+  /*test("Solution Order Created with Errors", function(){
+    const data = res.body.BusSolnOrdHasError;
+    expect(data).to.equal('X');
+  });
+  */
+  
+  test("Follow-up Sales Order id "+res.body.d.results[0].SalesOrder+" Response Time: "+res.getResponseTime()+"ms", function(){
+    //const data1 = res.body.BusSolnOrdHasError;
+    //expect(data1).to.not.equal('X');
+    const data1 = res.body.d.results[0].SalesOrder;
+    const data3 = req.body.BusSolnOrdItmDescription;
+    expect(data1).is.a('String');
+  });
+  
+  
+  
+}

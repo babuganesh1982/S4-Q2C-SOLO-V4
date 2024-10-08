@@ -1,0 +1,55 @@
+meta {
+  name: 001_Get CSRF Token
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{server}}{{odatav4_path}}/BusinessSolutionOrder?$top=1
+  body: none
+  auth: basic
+}
+
+params:query {
+  $top: 1
+}
+
+headers {
+  x-csrf-token: fetch
+}
+
+auth:basic {
+  username: {{username}}
+  password: {{password}}
+}
+
+vars:post-response {
+  xcsrfToken: res.headers.get('x-csrf-token')
+}
+
+assert {
+  res.status: eq 200
+  xcsrfToken: isDefined
+  res.body.value[0].BusinessSolutionOrder: startsWith '10'
+}
+
+script:post-response {
+  //console.log("Var Tok"+bru.getVar("xcsrfToken"));
+  bru.setEnvVar("XCSRF",res.getHeader("x-csrf-token"))
+  //console.log(res.body);
+  //console.log(res.headers);
+  
+  //console.log(res.headers."cache-control");
+  //console.log(res.body.value[0].BusinessSolutionOrder);
+  
+  //console.log(res.headers.get('x-csrf-token'));
+  
+  
+}
+
+tests {
+  test("Get XCSRF Token "+res.headers.get('x-csrf-token')+ " - Response Time: "+res.getResponseTime()+"ms", function(){
+    const data = res.getHeader("x-csrf-token");
+    expect(data).to.be.a('string');
+  });
+}
