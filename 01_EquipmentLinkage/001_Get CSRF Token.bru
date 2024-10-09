@@ -43,6 +43,8 @@ script:post-response {
   //console.log(res.body.value[0].BusinessSolutionOrder);
   
   //console.log(res.headers.get('x-csrf-token'));
+  cookie = res.getHeader("set-cookie");
+bru.setEnvVar("cookie",cookie[1]);
   
   
 }
